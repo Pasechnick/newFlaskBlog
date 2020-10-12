@@ -1,0 +1,74 @@
+in this stage we want to split the files so the app will consist of packages 
+
+so we create a models file where we putting the user and post database models
+
+and by moving those models we do not need to forget that we also need to import their libraries also, like datetime. 
+Then we also need to import User and Post models to the main app file, by writing import on the top of the document the import sentence "from models import User, Post"
+we importing those db models from newly created file back. 
+
+The problem that occurs is called "circular import" - so the User and Post models can not be imported and the system crushes.
+
+When we run the app from our terminal, the terminal imports the User and Post from the model module and when the python imports something from a module it still runs the entire imported module and the background, 
+so then there is a problem -> python goes to the "models" script and then tries to perform it's imports: "from flaskblog import db", 
+at this point the python does not know what flaskblog is cuz after we run the flaskblog from the terminal we running it directly with python 
+and python names the name of the running script "__main__" and not "flaskblog" so when it gets to the line "from flaskblog import db" 
+the python does not know what flaskblog is, it only knows "__main__". 
+So we can change "from flaskblog import db" to "from __main__ import db", 
+but then there is one more error cuz it could not find "db" variable cuz this variable is unreachable for import and it can not import "db" -> so we can move the "from flaskblog import db" under the "db" initialization then the app will work
+But if for some case the database (site.db) was deleted or not created inside the python it will crush gain so we need to find other solution 
+
+So there is a good, not ugly solution: to set up our code in the way where we are not running flaskblog directly, so there is no need to import "__main__" 
+we turn the app into the package - it will make all this imports more simple and allows us to separate things out better then now.
+
+To tell python that our app is a package we need to create a folder (flaskblog) within our project with "__init__" file name inside. Then we move all our files inside this folder.
+
+
+So the __init__ file will be where we initialize our app to bring together different components.
+
+We move all the imports from the flaskblog.py to __init__, then we need to create a separated file for our routes. We reorganize all imports and ect, so the app has a package form 
+
+after all we have this form:
+
+├── flaskblog             # flaskblog package
+│   ├── __init__.py       # tells python that this is a package also ties and initialize together everything that we need for our app 
+│   ├── forms.py          
+│   ├── models.py
+│   ├── routes.py          # contains all the routes 
+│   ├── static
+│   │   └── main.css
+│   └── templates
+│       ├── about.html
+│       ├── home.html
+│       ├── layout.html
+│       ├── login.html
+│       └── register.html
+└── run.py                  # runs the app
+
+to run the app right now we can use:
+
+> python3 run.py 
+
+after we have deleted the "site.db" we can recreate the db:
+
+> python3 
+>>> from flaskblog import db  # makes instance of db
+>>> from flaskblog.models import User, Post  # creates a db structure 
+>>> db.create_all()  # creates an actual db file 
+>>> User.query.all()  # asks for the variables in the User table 
+[]
+
+├── flaskblog
+│   ├── __init__.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── routes.py
+│   ├── site.db                     # so we have right now the database file created
+│   ├── static
+│   │   └── main.css
+│   └── templates
+│       ├── about.html
+│       ├── home.html
+│       ├── layout.html
+│       ├── login.html
+│       └── register.html
+└── run.py
