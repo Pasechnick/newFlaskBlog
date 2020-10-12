@@ -1,13 +1,13 @@
 
 
-1. make a git initialization so i have version control 
-    1.2 make sure there are many different versions (branches)
+DONE 1. make a git initialization so i have version control 
+        1.2 make sure there are many different versions (branches)
 
 2. push to github so i can later try out how can i clone my project and what kind of problems might occur 
 
 3. make sure there is a requirement.txt file so i can install my dependencies later on a different machine
 
-4. use brew "tree" command helper to see the structure of the project:
+DONE 4. use brew "tree" command helper to see the structure of the project:
 
 ├── flaskblog.py
 ├── forms.py
@@ -21,7 +21,7 @@
     ├── login.html
     └── register.html
 
-5. remember that i have setup the database locally, so i might need to create it again on a new machine
+5. remember that i have to setup the database locally again if i am on the new machine, so i might need to create it again on a new machine
 
 6. always add a note file with howTo instructions about the version 
 
@@ -29,3 +29,15 @@
 Notiz:
 
 "python3 flaskblog.py" is better instead of "flask run" 
+
+!! BEFORE WORK ON THE PROJECT:
+
+- what branch i am working at right now ?
+- "git status" for unchecked files before start
+
+!! AFTER WORK ON THE PROJECT:
+
+- is an updated howTo file included before push ?
+- schauen ob alle Dateien gespechert sind 
+- nur dann commit machen 
+- check ob alles auf der Seite des Githabes synchronisiert ist 
