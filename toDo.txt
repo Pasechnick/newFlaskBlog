@@ -35,9 +35,17 @@ Notiz:
 - what branch i am working at right now ?
 - "git status" for unchecked files before start
 
+
+
 !! AFTER WORK ON THE PROJECT:
 
 - is an updated howTo file included before push ?
 - schauen ob alle Dateien gespechert sind 
 - nur dann commit machen 
 - check ob alles auf der Seite des Githabes synchronisiert ist 
+
+
+Strukture: 
+
+- immer die alter Version des Projektes bei sich haben (anderes Bildschirm)
+- mit Kommentaren des alten Projektes die neue Version des Projektes befüllen 
