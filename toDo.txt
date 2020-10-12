@@ -21,4 +21,11 @@
     ├── login.html
     └── register.html
 
-5. 
+5. remember that i have setup the database locally, so i might need to create it again on a new machine
+
+6. always add a note file with howTo instructions about the version 
+
+
+Notiz:
+
+"python3 flaskblog.py" is better instead of "flask run" 
