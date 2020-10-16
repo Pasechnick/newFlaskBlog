@@ -25,6 +25,8 @@ DONE 4. use brew "tree" command helper to see the structure of the project:
 
 6. always add a note file with howTo instructions about the version 
 
+7. somehow i did not git the venv, so i have to make something about the requirement...
+
 
 Notiz:
 
@@ -32,6 +34,9 @@ Notiz:
 
 !! BEFORE WORK ON THE PROJECT:
 
+- use VENV: 
+    alex in ~/Documents/code/projects/flaskApp
+    > source flaskBlogVenv/bin/activate 
 - what branch i am working at right now ?
 - "git status" for unchecked files before start
 
