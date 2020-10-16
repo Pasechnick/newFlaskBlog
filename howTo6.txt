@@ -1,0 +1,65 @@
+lets add the same logic for User authentication  
+hash passwords, logins
+
+we need to install a hash algorithm so we can secure our login and passwords info even inside the database 
+> pip3 install flask-bcrypt 
+
+after the hash tool is installed we need to create an instance of it with python shell:
+
+> python3
+>>> from flask_bcrypt import Bcrypt                                # we need to import bcrypt class from the flask extension 
+>>> bcrypt = Bcrypt()                                              # creates an instance of this class
+>>> bcrypt.generate_password_hash('testing')                       # we can hash the password
+b'$2b$12$18ZMP4kgd8wweNalmua.TOax85FEyDhLOLZ4XJLaAJzX1h.w1ZfOu'    # get the password, the "b" at the beginning means it is hashed in bytes
+
+>>> bcrypt.generate_password_hash('testing').decode('utf-8')       # decodes to a regular string from bytes
+'$2b$12$iHO72BYVsTp0XQnHdNl5EOYEIhC90QGbipiQ1dVOGA/yliRgHM.wy'
+
+so we want that every time i run the log in we get a differently hashed password 
+and in the same time we got to check this hashed password
+so we need to write a checking system to check this hashed password
+
+#so the variable will remember the hashed string of 'testing' 
+>>> hashed_pw = bcrypt.generate_password_hash('testing').decode('utf-8')  
+
+Then we can check the password:
+>>> bcrypt.check_password_hash(hashed_pw, 'password')  # checks the wrong password
+False
+>>> bcrypt.check_password_hash(hashed_pw, 'testing')  # checks the right password 
+True 
+
+>>> exit()
+
+Part II
+
+after we have programmed the registration route we can check if the registration works by entering some data in the sign up...
+after that we can check this data inside the db. If the data there, all good.
+
+> python3
+>>> from flaskblog import db            # since we have deleted the db structure in previous stages we recreate the db...
+>>> from flaskblog.models import User   # creating User table in the db
+>>> user = User.query.first()           # getting this first user out of table
+>>> user
+User('Corey', 'coreyMSchaffer@blog.com', 'default.jpg')  # so we got this entered by us (or a random user) info in the db, so all works 
+>>> user.password                        # gets the hashed password (password was "testing")
+
+there is nothing that stops user from entering the same info for the login page again, so we need to make a new logic to restrain that
+
+also with flask if there is an error after we run the server we could check some data (or catch the failure variable or code)
+with build in python console inside the error page just by clicking at the needed code (small console icon)
+and entering the debugger PIN for the server (look up in the terminal after we run "python3 run.py"), but that is handy only 
+during the developing process itself and not when the web app is deployed, cuz this way some users can look up a hidden info through that error page
+
+THEN we need to create a log in system with the flasklogin 
+
+> pip3 install flask-login
+
+then we add this extension to init file. So we add some functionality to our db (models.py) so it will handle all login sessions at the background for us
+
+so after we are logged in we still see the login and registration routes on the page so we need to redo this:
+we can use current user extension fot logged in and logged out state 
+
+
+we also need to add a restriction for particular routes so i can go to this routes only when i logged in ("u need to be logged in to go there")
+first we create account route and then the template account 
+
