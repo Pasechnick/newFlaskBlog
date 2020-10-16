@@ -34,10 +34,10 @@ Notiz:
 
 !! BEFORE WORK ON THE PROJECT:
 
-- use VENV: 
+- activate VENV: 
     alex in ~/Documents/code/projects/flaskApp
     > source flaskBlogVenv/bin/activate 
-- what branch i am working at right now ?
+- what branch i am working at right now ? Create a new branch for a new version 
 - "git status" for unchecked files before start
 
 
