@@ -37,7 +37,7 @@ Notiz:
 - activate VENV: 
     alex in ~/Documents/code/projects/flaskApp
     > source flaskBlogVenv/bin/activate 
-- what branch i am working at right now ? Create a new branch for a new version 
+- what BRANCH i am working at right now ? Create a new branch for a new version 
 - "git status" for unchecked files before start
 - open howTo for the current version
 
@@ -45,6 +45,7 @@ Notiz:
 
 !! AFTER WORK ON THE PROJECT:
 
+- deactivate venv
 - is an updated howTo file included before push ?
 - schauen ob alle Dateien gespechert sind 
 - nur dann commit machen 
