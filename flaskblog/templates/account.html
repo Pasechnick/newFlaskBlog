@@ -2,6 +2,70 @@
 
 {% block content %}
 
-    <h1>Account page for: {{ current_user.username }}</h1>
+    <div class="content-section">
+        <div class="media">
+        <!-- so, the image file is coded in the account route, where it gets the image from the db model User, where we link as default pic   -->
+            <img class="rounded-circle account-img" src="{{ image_file }}"> 
+            <div class="media-body">
+                <h2 class="account-heading">{{ current_user.username }}</h2>
+                <p class="text-secondary">{{ current_user.email }}</p>
+            </div>
+        </div>
+        <!-- form here: -->
+            <!-- enctype = "multipart/form-data" is needed in order for our form to pass our image data properly: enctype = "multipart/form-data" other way there will be an error that is hard to debug if we want to update an image file for the user avatar  ! -->
+            <form method="POST" action="" enctype = "multipart/form-data"> 
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group"> 
+                    <legend class="border-bottom mb-4">Account Info</legend> 
+                    <div class ="form-group"> 
+                        {{ form.username.label(class="form-control-label") }} 
+                        <!-- each of this fields with bootstrap has an error validation so we can  detect it and write the user what is happening and what error it was -->
+                        <!-- so we need to put class "is-invalid" in our field and the a div with invalid feedback  -->
+                        {% if form.username.errors %} 
+                            {{ form.username(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <!-- then if there are no errors it goes there: -->
+                            {{ form.username(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+    
+                    <div class ="form-group">
+                        {{ form.email.label(class="form-control-label") }}
+                        {% if form.email.errors %} 
+                            {{ form.email(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <!-- then if there are no errors it goes there: -->
+                            {{ form.email(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+
+                    <div class ="form-group">
+                        {{ form.picture.label() }}
+                        {{ form.picture(class="form-control-file") }}
+                        <!-- if there is an error to be displayed for images -->
+                        {% if form.picture.errors %}
+                            {% for error in form.picture.errors %}
+                                <span class = "text-danger">{{ error }}</span></br>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                </fieldset>
+    
+                <div class ="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+    </div>  
     
 {% endblock content %}

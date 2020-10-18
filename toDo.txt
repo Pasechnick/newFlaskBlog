@@ -39,6 +39,7 @@ Notiz:
     > source flaskBlogVenv/bin/activate 
 - what branch i am working at right now ? Create a new branch for a new version 
 - "git status" for unchecked files before start
+- open howTo for the current version
 
 
 
