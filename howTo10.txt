@@ -1,0 +1,94 @@
+"itsdangerous" package is preinstalled with flask. only who has access to user's email can reset their password
+
+>>> python3
+
+>>> from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+>>> s = Serializer('secret', 30)  // we going to use it to pass a secret key and an expiration time in 30 seconds                 
+>>> token = s.dumps({'user_id': 1}).decode('utf-8')  // we need to decode cuz it is in bytes originally (after we have a token with expiration of 30 seconds)
+>>> token
+'eyJhbGciOiJIUzUxMiIsImlhdCI6MTU4ODQ0MjU4OSwiZXhwIjoxNTg4NDQyNjE5fQ.eyJ1c2
+VyX2lkIjoxfQ.kiQjTGzP2S61gdzgh-Rj0fBOe4JzymPjieTMzHkptUlxe4bEO9CdLJg24jIS8y7JDwI9QhdeyErc8RqIJtcAJQ'  // we get this huge random string token
+
+// if we quickly (during 30 sec) check this token then we run this and we get the payload of user_id
+>>> s.loads(token)
+{'user_id': 1} 
+
+>>> s.loads(token) // if we wait more then 30 seconds 
+itsdangerous.exc.SignatureExpired: Signature expired  // cuz 30 seconds left and it is expired
+
+
+we also need to install flask-mail extension 
+
+> pip3 install flask-mail
+
+----------------------------------------------------------------------------------------------------------------------------------------
+i will also need environmental variables to put my mail server username and password 
+environmental variables, so we can share the code but with private info saved on my machine...
+on mac and linux is the same:
+
+here is a script with my fake credentials or might be a secret api key or any vital info i share:
+
+    import os 
+
+    db_user = 'my_db_user'
+    db_password = 'my_db_pass_123'
+
+    print(db_user)
+    print(db_password)
+
+So the idea is that we have saved our password or username in a file on a computer that only we can have access to from our computer
+in that time here: ".bash_profile":
+
+from our home directory
+> nano .bash_profile
+
+export DB_USER="my_db_user"
+export DB_PASS="my_db_pass_123!"
+
+// once we got this variables set, we save the file and quit the terminal 
+// after that we can open our file we need to use the environmental variables:
+
+we also might need to restart he code editor program...
+
+here is my new script where i need environmental variables:
+
+    import os 
+
+    db_user = os.environ.get('DB_USER')
+    db_user = os.environ.get('DB_PASS')
+
+    print(db_user)
+    print(db_pass)
+
+// after we run the code we can see the real values that are stored in my ".bash_profile" file. 
+// So we can share the code and the logic with anyone else, but other users will not have access to our sensitive data like passwords, keys and ect.
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+in the __init__.py file we have coded the whole mail procedure but the data we i have is too sensible to type in,
+so i need to encode my data and then with the help of video https://youtu.be/48Eb8JuFuUI 
+and some comments here: https://youtu.be/vutyTx7IaAI?t=1565  try out to establish the working email sender to get the email on my gmail account
+"I think this chapter is the chapter that most of viewers have problem about authentication with GMAIL. After I did a bunches of trial and error, spent like several hour to figure it out what's wrong due to I am using Windows and VS Code. Finally, I found my own solution. It might not work with you guys but I hope it somewhat useful though. The steps are:
+
+Prerequisite
+1. you need a valid gmail account which means you need to know Email address and Password
+2. you have to add those email address and password to Windows System Variable.  (EMAIL_USER and EMAIL_PASSWORD)
+3. you need to turn on '
+Less secure app access' in your Gmail Account Security.
+
+Once all above prerequisite has been done, try to check that you can get those variable from command line first.
+1. go to command prompt, type Echo %EMAIL_USER% and the expect return output is your email. if the %EMAIL_USER% also return then you configure step 2 above incorrectly.
+
+2. Do not execute Python file from VS Code. This issue similar to Pycharm user as well. I think the VS Code may not be able to access OS environment somehow (possibly I do not sure how to configure that.) The alternative solution is activate your Virtual Environment via Command Line and then run Python via Command Line -- Open command prompt and go to your Python Program folder. CD Scripts and execute 'activate' 
+
+2.1 test whether your Python can get OS environment by execute Python and import os and then print (os.environ.get("EMAIL_USER")) The expect output is your email address.
+
+2.2 Once it done, you go back to your main program folder and execute Python run.py
+
+3. Try to reset password. Email should be sent. I got the email now.
+
+Thanks Corey for an wonderful tutorial. <3"
+from https://youtu.be/vutyTx7IaAI?t=1565 
+
+the comment for the video above might be helpful

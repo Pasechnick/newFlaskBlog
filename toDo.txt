@@ -56,3 +56,5 @@ Strukture:
 
 - immer die alter Version des Projektes bei sich haben (anderes Bildschirm)
 - mit Kommentaren des alten Projektes die neue Version des Projektes befüllen 
+
+!! AT THE END OF THE PROJECT I HAVE TO REWORK ALL VERSIONS (BRANCHES) SO THE COMMENTS ARE UP TO IT'S VERSION, NOT JUST EVERYTHING IS COMMENTED 

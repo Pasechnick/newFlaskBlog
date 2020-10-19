@@ -71,3 +71,24 @@ class PostForm(FlaskForm):
      submit = SubmitField('Post') 
 
      # then wee create an instance of this form in the routes.py
+
+
+# this is a form for our route. Reset password page where a user can submit their email for their account so instructions can be send
+class RequestResetForm(FlaskForm):
+    email = StringField('Email',
+                            validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    # validation if the account exist for the email address
+    def validate_email(self, email):
+        user = User.query.filter_by(email = email.data).first()
+        # then, if there is no user under this email, the user have to register
+        if user is None:
+            raise ValidationError('There is no account with that email, register first.')
+
+# form where the user actually reset the password
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password',
+                                         validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')

@@ -1,11 +1,12 @@
-import os # need to grab the file extention of the uploaded image and saves it do db with this extention (image.jpg, image.png, ect..)
-import secrets # we need in order to get randomize picture name when we upload a new pic
-from PIL import Image # this class is installed with Pillow package (pip3 install Pillow) so we can autoresize big pictures to prevent the site from loading big files
-from flask import render_template, url_for, flash, redirect, request, abort # import abort for update route
-from flaskblog import app, db, bcrypt
-from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+import os 
+import secrets 
+from PIL import Image
+from flask import render_template, url_for, flash, redirect, request, abort 
+from flaskblog import app, db, bcrypt, mail # import mail for the reset password procedure
+from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, RequestResetForm, ResetPasswordForm
 from flaskblog.models import User, Post
-from flask_login import login_user, current_user, logout_user, login_required 
+from flask_login import login_user, current_user, logout_user, login_required
+from flask_mail import Message # to send an email message, needed for reset password  
 
 
 @app.route("/")
@@ -181,3 +182,67 @@ def user_posts(username):
         .order_by(Post.date_posted.desc())\
         .paginate(page = page, per_page=5)
     return render_template("user_posts.html", posts = posts, user=user) 
+
+
+# EMAIL SENDING 
+# with this function we can sent email to the user with token and instructions to reset the password 
+# before we also need to install another flask extention flask-mail
+def send_reset_email(user):
+    token = user.get_reset_token()
+    # we also need to keep in mind that the sender email has to have something from the damain name or it will land in the spam folder 
+    msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
+    # _external=True needs to get an absolute url rather then a relative (like in our app directory)
+    # keep in mind that we need to write this message without tab or space
+    msg.body = f''' To reset your password visit the folowing link:
+{url_for('reset_token', token = token, _external=True)} 
+
+If you did not make ths request then simply ignore this email and no changes will be made
+'''
+    mail.send(msg) # the actual code that sends the email
+
+#TWO ROUTES WITH RESET PASSWORD FUNCTIONALITY:
+
+# the route to reset the password
+# user enters his email addres, where the reset password information be send
+@app.route("/reset_password", methods =['GET', 'POST']) 
+def reset_request():
+    # making sure that the user is logged out
+    if current_user.is_authenticated: 
+        return redirect(url_for('home'))
+    form = RequestResetForm()
+    if form.validate_on_submit(): # at this point the user has submitted an email into our form, so we need to grab the user for that email
+        user = User.query.filter_by(email=form.email.data).first()
+        # after we got the user, we need to send this user an email with their token, so they can reset the password
+        send_reset_email(user) # this function is written above
+        flash('An email has been sent with instructions to reset your password', 'info') 
+        return redirect(url_for('login'))
+    return render_template("reset_request.html", title = 'Reset Password', form=form)
+
+
+
+# here is the route where the user actually resets his password (the route for the request for reset is above)
+# to make sure that it is the actual user we need to be sure that the toke that we gave them in the email is active
+# # so by sending them an email with a link containing this token we will know that it is them when they navigate to this route 
+# so this route is similar to this above but accept the token as paramenter
+   
+@app.route("/reset_password/<token>", methods =['GET', 'POST']) 
+def reset_token(token):
+    # making sure that the user is logged out
+    if current_user.is_authenticated: 
+        return redirect(url_for('home'))
+    user = User.verify_reset_token(token)
+    # if we dont get user back, it means the token is invalid or expired, so we put this conditional 
+    if user is None:
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('reset_request'))
+    # and if the token valid we can dispaly the form so the user can update it's password
+    form = ResetPasswordForm()
+    # getting the password changed and saved to the db
+    if form.validate_on_submit():
+        hashed_pasword = bcrypt.generate_password_hash(form.password.data).decode('utf-8') 
+        user.password = hashed_pasword # it will hash that password from our "form.password.data" which we do have a password field in this reset passord from above
+        db.session.commit() # will commit the changes of user's password 
+        flash('Your password has been updated ! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    # the user will be send to the form to update the password
+    return render_template("reset_token.html", title = 'Reset Password', form=form)
