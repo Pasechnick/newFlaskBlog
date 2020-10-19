@@ -9,6 +9,8 @@ DONE 1. make a git initialization so i have version control
 
 DONE 4. use brew "tree" command helper to see the structure of the project:
 
+5. try out password reset with email being send  
+
 ├── flaskblog.py
 ├── forms.py
 ├── site.db
@@ -21,11 +23,11 @@ DONE 4. use brew "tree" command helper to see the structure of the project:
     ├── login.html
     └── register.html
 
-5. remember that i have to setup the database locally again if i am on the new machine, so i might need to create it again on a new machine
+6. remember that i have to setup the database locally again if i am on the new machine, so i might need to create it again on a new machine
 
-6. always add a note file with howTo instructions about the version 
+7. always add a note file with howTo instructions about the version 
 
-7. somehow i did not git the venv, so i have to make something about the requirement...
+8. somehow i did not git the venv, so i have to make something about the requirement...
 
 
 Notiz:
