@@ -48,7 +48,7 @@ Notiz:
 - deactivate venv
 - is an updated howTo file included before push ?
 - schauen ob alle Dateien gespechert sind 
-- nur dann commit machen 
+- nur dann commit machen und push
 - check ob alles auf der Seite des Githabes synchronisiert ist 
 
 
