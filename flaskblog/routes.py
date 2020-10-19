@@ -11,8 +11,11 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all() # grabs all posts, that have been made 
-    return render_template("home.html", posts = posts)
+    # grabbing this "page" variable we can pass it to paginate, with type "int" we insure if someone tries to enter something different form a number 
+    page = request.args.get('page', 1, type = int) # we are grabbing the page, default page is 1, type int will cuz our site to appear a value error if someone passes anything other then integer as page number 
+    # with .order_by(Post.date_posted.desc() we can order out posts from new...to...old way
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page = page, per_page=5) # instead of query.all() we are using paginate method to be able to set amount of posts to preload (instead of loading them all once)  
+    return render_template("home.html", posts = posts) 
 
 @app.route("/about")
 def about():
@@ -168,3 +171,13 @@ def delete_post(post_id):
     return redirect(url_for('home'))
 
 
+# route to go to all users's post by clicking on the username's tag
+@app.route("/user/<string:username>")
+def user_posts(username):
+    page = request.args.get('page', 1, type = int)
+    user = User.query.filter_by(username=username).first_or_404() # get the first user with this username and if u get non, return 404 "no found" error 
+    # by putting "\" (backlash) we can break up multiple lines without actually breaking the code, so we can look up the code clear 
+    posts = Post.query.filter_by(author=user)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page = page, per_page=5)
+    return render_template("user_posts.html", posts = posts, user=user) 
