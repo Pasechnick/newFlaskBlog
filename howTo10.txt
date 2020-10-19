@@ -27,6 +27,9 @@ i will also need environmental variables to put my mail server username and pass
 environmental variables, so we can share the code but with private info saved on my machine...
 on mac and linux is the same:
 
+environmental variables, so we can share the code but with private info saved on my machine...
+on mac and linux is the same: it is done USING BASH and ZSH 
+
 here is a script with my fake credentials or might be a secret api key or any vital info i share:
 
     import os 
@@ -38,31 +41,47 @@ here is a script with my fake credentials or might be a secret api key or any vi
     print(db_password)
 
 So the idea is that we have saved our password or username in a file on a computer that only we can have access to from our computer
-in that time here: ".bash_profile":
+in that time here: ".bash_profile" for BASH and ".zprofile" if we use ZSH:
 
-from our home directory
+
+from our home directory if we use ZSH:
+
+> nano .zprofile // will enter zsh profile file, where we can store our env variables 
+
+export DB_USER="my_db_user"
+export DB_PASS="my_db_pass_123!"
+
+Then save and exit/reopen the terminal... 
+
+
+from our home directory if we use BASH:
+
 > nano .bash_profile
 
 export DB_USER="my_db_user"
 export DB_PASS="my_db_pass_123!"
+
 
 // once we got this variables set, we save the file and quit the terminal 
 // after that we can open our file we need to use the environmental variables:
 
 we also might need to restart he code editor program...
 
-here is my new script where i need environmental variables:
+here is my new python script where i need environmental variables:
 
     import os 
 
+    # got them from environmental variables, that is why we need to import "os" 
+
     db_user = os.environ.get('DB_USER')
-    db_user = os.environ.get('DB_PASS')
+    db_pass = os.environ.get('DB_PASS')
 
     print(db_user)
     print(db_pass)
 
-// after we run the code we can see the real values that are stored in my ".bash_profile" file. 
+// after we run the code we can see the real values that are stored in my ".bash_profile" file if we use BASH and stored in ".zprofile" if we use ZSH. 
 // So we can share the code and the logic with anyone else, but other users will not have access to our sensitive data like passwords, keys and ect.
+
 
 -------------------------------------------------------------------------------------------------------------------------------
 
