@@ -34,8 +34,9 @@
               </div>
               <!-- Navbar Right Side -->
               <div class="navbar-nav">
-                <!-- the logic with current_user flask class if we are logged in and if not: -->
                 {% if current_user.is_authenticated %}
+                <!-- we also add New Post to our nav bar so the user can add a new post... -->
+                <a class="nav-item nav-link" href="{{ url_for('new_post') }}">New Post</a> 
                 <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
                 <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                 {% else  %}

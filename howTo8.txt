@@ -1,0 +1,5 @@
+now we can add posts by users, full CRUD app
+
+we delete the old dummy data with author and posts
+
+we add new create, update, delete routes

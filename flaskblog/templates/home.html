@@ -2,14 +2,20 @@
 
 {% block content %}
 
+    <!-- displays all posts we have done -->
     {% for post in posts %}
     <article class="media content-section">
+      <!-- the "author" is our backref so we can access it's  entire User and his attributes (where image_file is an attribute of User) -->
+      <!-- we make a small avatar placed near the User's post: -->
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
         <div class="media-body">
           <div class="article-metadata">
-            <a class="mr-2" href="#">{{ post.author }}</a>
-            <small class="text-muted">{{ post.date_posted }}</small>
+            <a class="mr-2" href="#">{{ post.author.username }}</a> 
+            <!-- with strftime method we can display time how we want, and we can customize it better and detailed  -->
+            <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small> 
           </div>
-          <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+          <!-- article title.  -->
+          <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
           <p class="article-content">{{ post.content }}</p>
         </div>
       </article>

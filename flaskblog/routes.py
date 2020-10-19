@@ -1,36 +1,18 @@
 import os # need to grab the file extention of the uploaded image and saves it do db with this extention (image.jpg, image.png, ect..)
 import secrets # we need in order to get randomize picture name when we upload a new pic
 from PIL import Image # this class is installed with Pillow package (pip3 install Pillow) so we can autoresize big pictures to prevent the site from loading big files
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort # import abort for update route
 from flaskblog import app, db, bcrypt
-from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm # we need UpdateAccountForm so we can use
+from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from flaskblog.models import User, Post
-from flask_login import login_user, current_user, logout_user, login_required # imports that class so we can check the user email and password validation with the db data, and with current user we can deliver user a
+from flask_login import login_user, current_user, logout_user, login_required 
 
-
-# !! AFTER THE DB.MODELS ARE CREATED WE GO TO THE PYTHON3 CONSOLE AND ACTUALLY CREATE THE DATABASE WITH OUR MODELS !! 
-
-
-posts = [
-    {
-        'author': 'corey schafer',
-        'title': 'blog post 1',
-        'content': 'First post content',
-        'date_posted': 'april 20, 2002'
-    },
-
-    {
-        'author': 'alex mitu',
-        'title': 'blog post 2',
-        'content': 'second post content',
-        'date_posted': 'april 23, 2012'
-    }
-]
 
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template("home.html", posts=posts)
+    posts = Post.query.all() # grabs all posts, that have been made 
+    return render_template("home.html", posts = posts)
 
 @app.route("/about")
 def about():
@@ -124,3 +106,65 @@ def account():
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file) # it grabs the image in the user model (models.py) where we hardcoded that the default user image is the "default.jpg"
     return render_template('account.html', title = 'Account', image_file = image_file, form=form)
+
+
+# route to create posts
+@app.route("/post/new", methods =['GET', 'POST']) 
+@login_required
+def new_post():
+    form = PostForm() # instance of the form to send 
+    if form.validate_on_submit():
+        # connection to the data base, so the pos we create will be saved in the db
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit() # will add the post to db
+        flash("Your Post has been created !", "success")
+        return redirect(url_for("home"))
+    return render_template('create_post.html', title = 'New Post', form = form, legend = 'New Post')
+
+
+# with flask we can make a variables within our routes
+# we want to create an id, where it is a part if the route
+# - <int:post_id> where "int" is what we can expect from the variable to be (can be "string" or etc...)
+@app.route("/post/new/<int:post_id>") 
+def post(post_id):
+    # lets fetch this post if it exists - we getting this by id
+    post = Post.query.get_or_404(post_id) # we can use a normal ".get" or ".first" to get the id, but ".get_or_404" will find the variable or return a 404 error (page does not exist) 
+    # then, if the post exist it will redirect us to the actual post
+    return render_template('post.html', title = post.title, post=post)
+
+
+#update route 
+@app.route("/post/new/<int:post_id>/update", methods =['GET', 'POST']) 
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    # only the user who wrote this post can update this post
+    if post.author != current_user:
+        abort(403) # 403 is http responce for a forbitten route 
+    form = PostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash('Your post has been updated !', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    elif request.method == 'GET': # then populate the for with below values (old text and title)
+        form.title.data = post.title
+        form.content.data = post.content
+    return render_template('create_post.html', title = 'Update Post', form = form, legend = 'Update Post')
+
+
+#delete route
+@app.route("/post/new/<int:post_id>/delete", methods =['POST']) 
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    db.session.delete(post)
+    db.session.commit()
+    flash('Your Post has been deleted !', 'success')
+    return redirect(url_for('home'))
+
+
