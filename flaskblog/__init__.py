@@ -20,7 +20,7 @@ login_manager.login_message_category = 'info' # how would be the "Please log in 
 
 
 # setting up a mail configuration 
-app.config['MAIL_SERVER'] = 'smpt.googlemail.com' # we say that we use gmail protocols 
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com' # we say that we use gmail protocols 
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
