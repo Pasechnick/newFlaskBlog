@@ -1,0 +1,90 @@
+We need to restructure our application and learn how to use flask blueprint
+
+We will move the configs on their own file and creation of the app into it's own function. 
+The purpose of this is that we can take our current app that has a lot of functionality in few files and split that up on more modules   
+
+By moving the creation of the app in a separate function will allow us to create different instances of our app, 
+in cases if we want to have one app for testing and one for deploying(production) - this called application factory
+
+We have to brake our app in different blueprints, this way we archive separate different functionality of the app into their own sections
+
+So, in version 10 of that app we in routes.py file we have many different routes in one file 
+and many of them are not related to each other, so as our app grows it will be a mess, the same story is with forms
+
+so we make a package and name it after functionality 
+
+we crete "users", "posts" and "main" directories 
+and to make it seen by python as a package we have to make "__init__.py" file inside of the directory and it does not need ro contain something 
+
+so we have to create a "routes.py" file inside of each package and put there routes that have to do something with it's functionality
+
+the also "forms.py" in each package 
+
+we also need to create a "utils.py" file in users directory for some functionality like send picture, send reset password and ect, those are specific to users package
+
+right after we reorganize all the routes and forms where they belong we also need to organize imports,
+so some programs like sublime have option where it will show what import is not being used in that file or what import we need to insert
+
+And i have to say the blueprint imports moving is a big pain in the ass, 
+so to move all imports and be sure nothing is forgotten or failed to import is difficult, in some cases we also need to change the import location, 
+so just double check everything,
+but it is nice to have blueprints as the app grows. 
+
+after everything was "imported" we delete our old "routes.py" and "forms.py" files cuz we have moved everything from them in different sections 
+
+
+then we change links in url_for(), cuz in our new packages we have changed some locations 
+and we run the app and click everywhere, delete posts, update and ect. so we know all routes are working 
+
+
+also we move all configurations to config.py file, and connected this with then we redone the run.py file 
+
+.
+├── flaskblog
+│   ├── __init__.py
+│   ├── config.py
+│   ├── main
+│   │   ├── __init__.py
+│   │   └── routes.py
+│   ├── models.py
+│   ├── posts
+│   │   ├── __init__.py
+│   │   ├── forms.py
+│   │   └── routes.py
+│   ├── site.db
+│   ├── static
+│   │   ├── main.css
+│   │   └── profile_pics
+│   │       ├── 1d1742b62481e173.png
+│   │       ├── 5d74dbffa83535b8.jpg
+│   │       ├── c469e85bb25a5089.jpg
+│   │       ├── c868efc233e6b17f.png
+│   │       ├── default.jpg
+│   │       └── eabf6641bf47f5de.png
+│   ├── templates
+│   │   ├── about.html
+│   │   ├── account.html
+│   │   ├── create_post.html
+│   │   ├── home.html
+│   │   ├── layout.html
+│   │   ├── login.html
+│   │   ├── post.html
+│   │   ├── register.html
+│   │   ├── reset_request.html
+│   │   ├── reset_token.html
+│   │   └── user_posts.html
+│   └── users
+│       ├── __init__.py
+│       ├── forms.py
+│       ├── routes.py
+│       └── utils.py
+├── howTo10.txt
+├── howTo11.txt
+├── howTo5.txt
+├── howTo6.txt
+├── howTo7.txt
+├── howTo8.txt
+├── howTo9.txt
+├── run.py
+├── testForEnvVar.py
+└── toDo.txt

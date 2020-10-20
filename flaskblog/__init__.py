@@ -1,35 +1,42 @@
-import os # importing for the email config
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt 
 from flask_login import LoginManager 
 from flask_mail import Mail # the extention we need for password reset procedure
-
-
+from flaskblog.config import Config
 
  
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '5e5b968d2e77c6d37d2b17ee2bc819de'
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///site.db'
-db = SQLAlchemy(app)
+# extention objects we will not move to create_app 
+db = SQLAlchemy()
 
-bcrypt = Bcrypt(app) # creates that class to initialize through the app
-login_manager = LoginManager(app) # login class 
-login_manager.login_view = 'login' # function name of our route
+bcrypt = Bcrypt() # creates that class to initialize through the app
+login_manager = LoginManager() # login class 
+login_manager.login_view = 'users.login' # function name of our route
 login_manager.login_message_category = 'info' # how would be the "Please log in to access this page." message looks like
 
+mail = Mail() 
 
-# setting up a mail configuration 
-# we say that we use gmail protocols for the mail client
 
-# for some reason we have to rework the
-# i also need to turn off "less secure app access" in security settings of gmail otherways it will be an authentication error 
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com' # it was smtp.googlemail.com
-app.config['MAIL_PORT'] = 465 # was 587
-app.config['MAIL_USE_SSL'] = True # was TLS
-app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
-app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
-mail = Mail(app) # initializing 
+# this function will take an argument for what configuration object we want to use for our app
+# so we set right now the argument as our config class we have just created in config.py 
+def create_app(config_class=Config):
+    # we move the creation of application inside of this create_app function
+    app = Flask(__name__)
+    app.config.from_object(Config)
+    # here we import the new instances and register blueprints 
+    from flaskblog.users.routes import users
+    from flaskblog.posts.routes import posts
+    from flaskblog.main.routes import main
 
-from flaskblog import routes
+    db.init_app(app)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
+    mail.init_app(app)
+
+    app.register_blueprint(users)
+    app.register_blueprint(posts)
+    app.register_blueprint(main)
+
+    return app

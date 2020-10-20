@@ -1,10 +1,10 @@
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed 
-from flask_login import current_user 
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField # text area field is needed for the content
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from flaskblog.models import User 
 
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from flask_login import current_user
+from flaskblog.models import User
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', 
@@ -62,15 +62,6 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email = email.data).first()
             if user:
                 raise ValidationError('Validation Message: That Email is taken, please use another')
-
-
-# a new class to post a post 
-class PostForm(FlaskForm):
-     title = StringField('Title', validators =[DataRequired()]) # every post has to have a title
-     content = TextAreaField('Content', validators=[DataRequired()]) # every post has a text area field
-     submit = SubmitField('Post') 
-
-     # then wee create an instance of this form in the routes.py
 
 
 # this is a form for our route. Reset password page where a user can submit their email for their account so instructions can be send

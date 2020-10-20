@@ -46,6 +46,10 @@ Notiz:
 
         all this configs (in init file) above might change and only specific for gmail account
 
+- after we have added any environmental variables we have to restart the terminal and the editor (if it has terminal activated, like Visual Studio)
+otherwise those env variables will be not accessible from the "current" terminal 
+
+
 !! BEFORE WORK ON THE PROJECT:
 
 - activate VENV: 
