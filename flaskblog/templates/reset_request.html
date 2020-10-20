@@ -10,7 +10,8 @@
         <form method="POST" action=""> 
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Reset Password</legend> 
+                <!-- small notice for me about sender-email  -->
+                <legend class="border-bottom mb-4">Reset Password <small>(FOR ADMIN: need to turn on less secure app access for gmail - sender account)</small></legend> 
                 
                 <div class ="form-group">
                     {{ form.email.label(class="form-control-label") }}

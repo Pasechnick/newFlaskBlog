@@ -20,9 +20,14 @@ login_manager.login_message_category = 'info' # how would be the "Please log in 
 
 
 # setting up a mail configuration 
-app.config['MAIL_SERVER'] = 'smtp.googlemail.com' # we say that we use gmail protocols 
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
+# we say that we use gmail protocols for the mail client
+
+# for some reason we have to rework the
+# i also need to turn off "less secure app access" in security settings of gmail otherways it will be an authentication error 
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com' # it was smtp.googlemail.com
+app.config['MAIL_PORT'] = 465 # was 587
+app.config['MAIL_USE_SSL'] = True # was TLS
 app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
 app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
 mail = Mail(app) # initializing 

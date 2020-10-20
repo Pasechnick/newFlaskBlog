@@ -32,7 +32,19 @@ DONE 4. use brew "tree" command helper to see the structure of the project:
 
 Notiz:
 
-"python3 flaskblog.py" is better instead of "flask run" 
+- "python3 flaskblog.py" is better instead of "flask run" 
+
+- the part with password reset might be tricky cuz of email configs and keep in mind using environmental variables (password saved on my machine) 
+
+    - next time look after email-sender customization:
+
+        app.config['MAIL_SERVER'] = 'smtp.gmail.com' # it was smtp.googlemail.com
+        app.config['MAIL_PORT'] = 465 # was 587
+        app.config['MAIL_USE_SSL'] = True # was TLS
+        app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
+        app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
+
+        all this configs (in init file) above might change and only specific for gmail account
 
 !! BEFORE WORK ON THE PROJECT:
 
