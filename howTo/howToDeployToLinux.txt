@@ -1,0 +1,28 @@
+we have created a linode linux server 
+
+so we have to know the ssh root address that is on, in my case Linode.com 
+
+then we copy this address and insert to our terminal then we need to enter the password for the server and then we are in
+
+after we in the first time we need to upgrade the 
+
+> apt update && apt upgrade // it will update and upgrade the software on the system (ubuntu in my case)
+it also might take several minutes depending on performance of the server and system itself
+
+then we need to set the host name
+
+> hostnamectl set-hostname flask-server
+> hostname 
+
+< flask-server  // so the name is "flask-server" right now
+
+> nano /etc/hosts   // we go to that file and add the address to hostsfile 
+
+139.162.155.15  flask-server
+
+right now we are logged in as a root user and we can execute every command. that does sound good, but it is best
+practice to add a new user that has limited privileges that we can use as our main account
+we still can run admin commands using sudo
+
+
+
