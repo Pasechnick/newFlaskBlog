@@ -1,0 +1,9 @@
+we will be adding some custom error pages
+
+so right now if we go http://127.0.0.1:5000/testpage we will get the page not exist error 404
+
+then if we rtry to update posts that not belong to the user we will get permission error 403
+http://127.0.0.1:5000/post/new/5/update
+
+this shows how we can use blueprint, so we have just created our custom error pages with the help of blueprint
+
