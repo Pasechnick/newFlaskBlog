@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect, request
-from flaskblog import app, db, bcrypt
+from flaskblog import app, db, bcrypt # we import db and bcrypt for the register route
 from flaskblog.forms import RegistrationForm, LoginForm
 from flaskblog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required # imports that class so we can check the user email and password validation with the db data, and with current user we can deliver user a
