@@ -10,8 +10,9 @@ app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///site.db'
 db = SQLAlchemy(app)
 
 bcrypt = Bcrypt(app) # creates that class to initialize through the app
-login_manager = LoginManager(app) # login class 
-login_manager.login_view = 'login' # function name of our route
+
+login_manager = LoginManager(app) # login class instance 
+login_manager.login_view = 'login' # the view ("login") we are passing in - is the function name of our "/login" route. We need this for 
 login_manager.login_message_category = 'info' # how would be the "Please log in to access this page." message looks like
 
 

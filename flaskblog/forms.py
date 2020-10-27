@@ -1,14 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from flaskblog.models import User # we need to import User to make the validation Error message
-
-# reg form inherits from FlaskForm
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError # we import "ValidationError" so we can can validate existend email and username with custom errors
+from flaskblog.models import User # we need to import User class to make the validation Error message, we need access to "username" in DB
 
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', 
-                            validators=[DataRequired(), Length(min=2, max=20)]) # the length of the username must be from 2 to 20 characters
+                            validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email',
                             validators=[DataRequired(), Email()])
     password = PasswordField('Password', 
@@ -18,14 +16,17 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
     # with this template function we can prevent showing the flaskerror page instead with our error messages under the sign up fields (username, email...)
-    # ^it is taken from "wtf_forms" documentaton 
-    # def validate_field(self, field):
+    # it is taken from "wtf_forms" documentaton:
+    # the "field" as argument - the fieldname that we want to validate (it should be inside of the class where we write the function, "RegistrationForm" currently and we checking for "username" and "email") 
+    
+    # def validate_field(self, field): 
     #     if True:
     #         raise ValidationError('Validation Message')
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username = username.data).first()
-        if user:
+    # custom validation that prevent flask errors with the same data entered when sign up
+    def validate_username(self, username): # prevent sign up with the same username
+        user = User.query.filter_by(username = username.data).first() # we query submitted username in DB whether it already exists in the DB 
+        if user: # so if this username exists in the DB there will be an error. So if there is nothing found, it will not hit "if" conditional
             raise ValidationError('Validation Message: That Username is taken, please use another')
 
     def validate_email(self, email):
