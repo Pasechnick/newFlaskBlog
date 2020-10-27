@@ -1,8 +1,11 @@
 
 from datetime import datetime
-from flaskblog import db
+from flaskblog import db # python knows that initialized "db" should be in "__init__.py" file, so we do not need specify the location (just the name of the our app "flaskblog")
 
-class User(db.Model): # Integer is a type of the id
+# here how we create "User" model (class) for DB. So the class itself is like a table, and the arguments like "id", "email" and ect. are columns where we specify it's type and other components  
+# "User" and "Post" classes inherit from "db.Model" that is a class from SQLAlchemy 
+
+class User(db.Model): # Integer is a type of the id, primary_key - unique ID for the user 
     id=db.Column(db.Integer, primary_key = True)
     # nullable = False - means this argument should exist (should be filled in)
     username = db.Column(db.String(20), unique=True, nullable=False) # in the validation the max length is 20 characters, it should be unique, we have to have a username so it could not be null 
@@ -17,19 +20,21 @@ class User(db.Model): # Integer is a type of the id
     # so that when we look at rhe database structure (with an sql client) we would not see this relationship - 
     # it will be an additional quarry at the background that will get all the posts that the user got created
 
-    # the method does - how the object (user model) is printed whenever we print it out
+    # the method "__repr__(self)" shows how the object (user model) is printed whenever we print it out
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+        return f"User('{self.username}', '{self.email}', '{self.image_file}')"  # so whenever the "user" object will be printed out it will show those arguments (we need this to be printed out in the python shell whenever we retrieve information)
+    
+    
 
 
-# create a post class to hold our posts
+# "post" class to hold our posts
 class Post(db.Model):
     id=db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100), nullable=False)
     # The type of this column should be "db.DateTime" and we need to create a default argument 
     # if there is no time filled in, 
     # so we need to import daytime class from flask and utcnow specific to show the time it was posted (time right now )
-    date_posted = db.Column(db.DateTime, nullable = False, default = datetime.utcnow) #to hold the date when the post was made 
+    date_posted = db.Column(db.DateTime, nullable = False, default = datetime.utcnow) # to hold the date when the post was made 
     content = db.Column(db.Text, nullable=False) # the content 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # id of the user who has posted the post. db.ForeignKey('user.id') specifies that the key has a relationship with the user model
 

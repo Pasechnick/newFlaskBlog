@@ -1,0 +1,89 @@
+ORM object relational mapper - allows us access DB in easy to use object oriented way and we can use different DB without changing my Python code 
+so in this scenario we can use SQLLite DB for testing and Postgres DB for production, 
+where we just pass in the different DB url to activate a certain DB in SQLAlchemy and the code will stay the same
+
+
+> pip3 install flask-sqlalchemy 
+
+after we have settled up the user and posts database we need to create the actual database using terminal
+
+> python3 // to enter the python shell
+
+>>> from flaskblog import db // flaskblog is the app we are working on and db will make an instance of the db we have created in the main app file
+
+>>> db.create_all() // should create the db, so the db will be a file in our file system since we are using sql lite db, and also we set the db to be URI - a file in the same directory as our app, so after that there should be a site.db file in our directory
+
+>>> from flaskblog import User, Post // we import the actual models we have created in the main app file
+
+CREATING:
+>>> user_1 = User(username='Corey', email='c@demo.com', password='password') // creating an instance of our user. so the instance "user_1" is a class User with attributes username, email and password
+
+ADDING
+>>> db.session.add(user_1) // we need to add this user to the database, but this will not actually add user_1, it will only tell the db that we made this change to be added later in the db, so we can make several changes and then eventually add them (add-, commit- like system in the git)
+
+we can also add another user 
+>>> user_1 = User(username='Alex', email='alex@demo.com', password='password') but the user will be not actually added right after that, to add this user we need to commit 
+
+COMMITTING:
+>>> db.session.commit() // we actually add the user by committing it (committing all the changes we have made to the db)
+
+>>> User.query.all()  //to access the users we have added
+>>> 
+
+>>> User.query.first()
+>>>
+
+>>> User.query.filter_by(username='Corey').all()  // return all matched results
+>>>
+
+>>> User.query.filter_by(username='Corey').first() // will get us the first result that matched ur filter. If there are many it is useful
+>>> 
+
+>>> user = User.query.filter_by(username='Corey').first()  // we can right away capture that variable after returning it by filtering
+>>> user.id
+1
+
+>>> user = User.query.get(1)
+User()
+
+>>> user.posts  // the current "user" has no posts, so we might also create some, to build a "one to many" relationship 
+[]
+
+ >>> post_1 = Post(title='Blog 1', content='First post content', user_id = user.id) // lets create our first post to, and we can set the attributes, where user_id is the author. Also, the date should be generate automatically 
+
+ >>> post_2 = Post(title='Blog 2', content='Second post content', user_id = user.id) // create the second post
+ keep in mind we basically did not yet created this posts - we only made an instance of them and need to stage them for further committing to the db
+
+ >>> db.session.add(post_1)
+ >>> db.session.add(post_2)
+
+ >>> db.session.commit()  //now they are actually in the db
+
+ >>> user.posts // shows list of all it's posts
+ >>>
+
+ >>> for posts in user.posts:  // right away we can loop through the posts to get a necessary info for us
+ ... print(post.title)
+ ... 
+Blog 1
+Blog 2
+
+>>> post = Post.query.first() // get the first of this posts 
+
+>>> post
+>>> 
+>>> post.user_id
+1
+>>> post.author // posts relationship (posts argument) we have added in the "User" model can show us user object cuz of "one to many relationship"
+>>> User('Corey')..
+
+>>> db.drop_all() // to drop all tables and rows structure at the db so now the db has nothing inside, we need to create them again 
+
+>>> db.create_all() // recreates fresh the db table and row structure 
+
+>>> User.query.all() // will return an empty list so it means they are empty
+[]
+>>> Post.query.all()
+[]
+
+So those models are empty for now, because we have dropped them with "db.drop_all()" command and then created them again "db.create_all()"

@@ -2,11 +2,15 @@
 
 {% block content %}
 
-    {% for post in posts %}
+    <!-- we are able to access posts, 
+        created in the routes files,
+        cuz we added "posts" in the route function where we accessing home template  -->
+    {% for post in posts %} <!-- we got the "posts" var from the return function and we give data to "post"  -->
+    <!-- so we looping all posts, so each post will show author, data, title content -->
     <article class="media content-section">
         <div class="media-body">
           <div class="article-metadata">
-            <a class="mr-2" href="#">{{ post.author }}</a>
+            <a class="mr-2" href="#">{{ post.author }}</a> 
             <small class="text-muted">{{ post.date_posted }}</small>
           </div>
           <h2><a class="article-title" href="#">{{ post.title }}</a></h2>

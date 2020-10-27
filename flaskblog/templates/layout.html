@@ -9,9 +9,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     
-    <!-- Our css snipet where we connect our css with url function-->
+    <!-- Our css snipet from static folder where we connect our css with url function-->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css')}}"> 
 
+    <!-- the title (name of the Tab when we enter the web app from browser) will be default as Flask Blog if we didn't pass our own title -->
     {% if title %}
         <title>Flask Blog - {{ title }}</title>
     {% else %}
@@ -45,17 +46,19 @@
     <main role="main" class="container">
         <div class="row">
           <div class="col-md-8">
+            <!-- this way we will get/catch any flash messages sended. We place it right on top of the content section  -->
             {% with messages = get_flashed_messages(with_categories=true) %} 
              <!-- then if there are messages received (flashed messages) we need to print out some message -->
                 {% if messages %}
                     <!-- so we can loop over this flashed messages -->
                     {% for category, message in messages %}
-                        <div class = "alert alert-{{ category }}">
-                        {{ message }}
+                        <div class = "alert alert-{{ category }}"> <!-- "category" means success, alert and ect. categories in flash messages of bootstraps -->
+                        {{ message }} <!-- showing the message itself -->
                         </div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
+
               <!-- here goes the content from home and about pages -->
             {% block content %}{% endblock %}
           </div>

@@ -3,24 +3,32 @@
 {% block content %}
 
     <div class = "content-section">
-        <!-- when we post this form the form will go back to the same route where we are at right now -->
+        <!-- the POST method allows us  -->
+        <!-- when we POST this form, the form will go back to the same route where we are at right now -->
+        <!-- by putting empty string in "action" tag means after the form sended it will send us back to the same route  -->
         <form method="POST" action=""> 
+            <!-- hidden tag is part of protection protocol, CSRF - cross site request forgery token, uses the SECRET KEY we have created, so we can secure the form from hacker attacks, stealing data from forms -->
             {{ form.hidden_tag() }}
             <fieldset class="form-group"> 
                 <legend class="border-bottom mb-4">Join Today</legend> 
-                <div class ="form-group"> 
-                    {{ form.username.label(class="form-control-label") }} 
-                    <!-- each of this fields with bootstrap has an error validation so we can  detect it and write the user what is happening and what error it was -->
+                <!-- we make form groups for username, email, password... and accessing data from "forms" through "form" instance we created in "registration" route-->
+                <div class ="form-group">
+                    <!-- we create label first. Then we create the username form itself (after some validation) and the same pattern with email, password and ect. -->
+                    {{ form.username.label(class="form-control-label") }}  <!-- class="form-control-label" - just some bootstrap class for the label look nicer -->
+                    <!-- each of this fields with bootstrap has an error validation so we can detect it and write the user what is happening and what error it was -->
                     <!-- so we need to put class "is-invalid" in our field and the a div with invalid feedback  -->
+
+                    <!-- in order to show validation errors for username formfield we need to check it for some errors and if there are some message user what the error is -->
                     {% if form.username.errors %} 
+                        <!-- by adding "is-invalid" class we get errors that occur so then we could show them-->
                         {{ form.username(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.username.errors %}
-                                <span>{{ error }}</span>
+                                <span>{{ error }}</span>  <!-- errors wil be printed -->
                             {% endfor %}
                         </div>
                     {% else %}
-                        <!-- then if there are no errors it goes there: -->
+                        <!-- the username formfield itself -->
                         {{ form.username(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
@@ -35,7 +43,6 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <!-- then if there are no errors it goes there: -->
                         {{ form.email(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
@@ -50,7 +57,6 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <!-- then if there are no errors it goes there: -->
                         {{ form.password(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
@@ -65,7 +71,6 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <!-- then if there are no errors it goes there: -->
                         {{ form.confirm_password(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
@@ -80,6 +85,7 @@
 
      <!-- the value we are passing in the "url_for()" is not the route name, but the name of the route function,
     in this case, the route is "/login" and the function is "login"  -->
+
     <div class = "border-top pt-3">
         <small class = "text-muted">                        
             Already Have An Account ? <a class = "ml-2" href="{{ url_for('login')}}">Sign In</a>
