@@ -3,4 +3,5 @@ we have added a default pic for a user account in static directory later we conn
 the picture we upload in to update the profile will be always resized in 125 x 125 pixels 
 
 also we can install a package to resize big picture that we might upload, so it prevent slow loading, and saves space on our file system 
+
 > pip3 install Pillow
