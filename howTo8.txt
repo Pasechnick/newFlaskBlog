@@ -1,4 +1,26 @@
-now we can add posts by users, full CRUD app
+now we can add posts by users, full CRUD app, we delete this dummy data 
+
+we should het used to the process of creating a new routes, so that means: 
+
+
+    @app.route("/theRoute", methods =['GET', 'POST']) 
+    @login_required 
+    def routes_function():
+        variable = instanceOfSomethingWeNeed()
+        if form.validate_on_submit():
+            ... maybe some instances from forms.py
+            ...
+            ...
+        return render_template('templateForRoute.html', title = 'Title for the Route', additionalArguments = argument, additionalArguments = argument ...)
+
+    then we build a template were we access data that we arrange in the route...
+
+- new route 
+- should have a template
+- and instances inside route from __init__.py what we need to work with later in the template 
+- all important imports within the project or additional extensions
+
+
 
 we delete the old dummy data with author and posts
 

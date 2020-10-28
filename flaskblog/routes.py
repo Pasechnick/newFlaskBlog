@@ -1,9 +1,9 @@
-import os # need to grab the file extention of the uploaded image and saves it do db with this extention (image.jpg, image.png, ect..)
-import secrets # we need in order to get randomize picture name when we upload a new pic
-from PIL import Image # this class is installed with Pillow package (pip3 install Pillow) so we can autoresize big pictures to prevent the site from loading big files
+import os 
+import secrets
+from PIL import Image 
 from flask import render_template, url_for, flash, redirect, request, abort # import abort for update route
 from flaskblog import app, db, bcrypt
-from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm # importing "PostForm" class so we can use instance of it in "/post/new" route to be able to post a new post
 from flaskblog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required 
 
@@ -11,7 +11,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/")
 @app.route("/home")
 def home():
-    posts = Post.query.all() # grabs all posts, that have been made 
+    # grabs all posts from the DB, that have been made. The way we display those Posts we implement in home.html template
+    posts = Post.query.all() 
     return render_template("home.html", posts = posts)
 
 @app.route("/about")
@@ -56,7 +57,7 @@ def login():
     return render_template('login.html', title = 'Login', form = form)
 
 
-# logout route we need ...
+
 @app.route("/logout")
 def logout():
     logout_user()
@@ -110,12 +111,12 @@ def account():
 
 # route to create posts
 @app.route("/post/new", methods =['GET', 'POST']) 
-@login_required
+@login_required # to create a post requires to be logged in 
 def new_post():
-    form = PostForm() # instance of the form to send 
+    form = PostForm() # instance of the PostForm class from forms.py so we can save data in DB that will be input from create_post template 
     if form.validate_on_submit():
-        # connection to the data base, so the pos we create will be saved in the db
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        # connection to the data base, so the post we create will be saved in the db
+        post = Post(title=form.title.data, content=form.content.data, author=current_user) # form.title.data, form.content.data - the input data that the user put in the form (in create_post template)
         db.session.add(post)
         db.session.commit() # will add the post to db
         flash("Your Post has been created !", "success")
@@ -123,18 +124,20 @@ def new_post():
     return render_template('create_post.html', title = 'New Post', form = form, legend = 'New Post')
 
 
-# with flask we can make a variables within our routes
-# we want to create an id, where it is a part if the route
-# - <int:post_id> where "int" is what we can expect from the variable to be (can be "string" or etc...)
-@app.route("/post/new/<int:post_id>") 
+
+# with flask we can make a variables within our routes, so we can create a route with id of a specific post
+# we want to create an id, where it is a part if the route, so that we can access a specific post 
+# - <int:post_id> where "int" is what we can expect from the variable "post_id" to be (can be "string" or etc...), so by putting "int" we specify "post_id" variable to be an integer number
+@app.route("/post/new/<int:post_id>") # so we basiclay create "post_id" within the route itself, so if the number of the post will be "1" "post_id" will be 1, if number of the post will be "2" "post_id" will be 2
 def post(post_id):
-    # lets fetch this post if it exists - we getting this by id
-    post = Post.query.get_or_404(post_id) # we can use a normal ".get" or ".first" to get the id, but ".get_or_404" will find the variable or return a 404 error (page does not exist) 
-    # then, if the post exist it will redirect us to the actual post
+    # lets get this post if it exists - we getting this by id
+    # "post" variable will save the the number that "post_id" is
+    post = Post.query.get_or_404(post_id) # we can use a normal ".get" or ".first" to get the id, but ".get_or_404" (give me the post with that id or return not exist error) will find the variable or return a 404 error (page does not exist) 
+    # then, if the post does exist it will redirect us to the actual post
     return render_template('post.html', title = post.title, post=post)
 
 
-#update route 
+# UPDATE post route 
 @app.route("/post/new/<int:post_id>/update", methods =['GET', 'POST']) 
 @login_required
 def update_post(post_id):
@@ -143,25 +146,28 @@ def update_post(post_id):
     if post.author != current_user:
         abort(403) # 403 is http responce for a forbitten route 
     form = PostForm()
+    # within here we actually update the post with new values:
+    # where "form.title.data" and "form.content.data" are the inputs
     if form.validate_on_submit():
         post.title = form.title.data
-        post.content = form.content.data
-        db.session.commit()
+        post.content = form.content.data 
+        db.session.commit() # sending the data to DB without using db.session.add() cuz those values are already in the DB and we just change them not creating the new
         flash('Your post has been updated !', 'success')
-        return redirect(url_for('post', post_id=post.id))
-    elif request.method == 'GET': # then populate the for with below values (old text and title)
+        return redirect(url_for('post', post_id=post.id)) # redirects to that updated specific post
+    elif request.method == 'GET': # populates the form with below values (old text and title) when we go to the update post route
         form.title.data = post.title
         form.content.data = post.content
-    return render_template('create_post.html', title = 'Update Post', form = form, legend = 'Update Post')
+    return render_template('create_post.html', title = 'Update Post', form = form, legend = 'Update Post') # is 
 
 
-#delete route
-@app.route("/post/new/<int:post_id>/delete", methods =['POST']) 
+# delete route
+@app.route("/post/new/<int:post_id>/delete", methods =['POST']) # we do not need GET request, because we are going to accept when they submitted from that modal 
 @login_required
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
+    # delete command and then commiting the changes
     db.session.delete(post)
     db.session.commit()
     flash('Your Post has been deleted !', 'success')

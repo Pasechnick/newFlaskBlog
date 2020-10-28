@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<!-- we have copied that form from login form and reformed -->
+<!-- we want that template to be a FORM to post a new post  -->
+<!-- we have copied that form from login.html form and reformed -->
 
 <div class = "content-section">
         
@@ -12,7 +13,7 @@
             <legend class="border-bottom mb-4">{{ legend }}</legend> 
             
             <div class ="form-group">
-                
+                <!-- title of the post -->
                 {{ form.title.label(class="form-control-label") }}
                 {% if form.title.errors %} 
                     {{ form.title(class="form-control form-control-lg is-invalid") }}
@@ -26,6 +27,8 @@
                     {{ form.title(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
+            
+            <!-- content text of the post -->
             <div class ="form-group">
                 {{ form.content.label(class="form-control-label") }}
                 {% if form.content.errors %} 
@@ -41,6 +44,7 @@
             </div>
         </fieldset>
 
+        <!-- submit button to submit new post -->
         <div class ="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
