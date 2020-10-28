@@ -3,15 +3,18 @@
 <!-- this user_posts template will be connected to the action when we click on the user's post 
     so we can see all posts from the user-->
 
-{% block content %}
+    <!-- this page is kinda similar to home page, but we add a heading that gives us know that this is user's posts page  -->
 
+{% block content %}
+  <!-- the heading for User's Posts: -->
    <h1 class = "mb-3">Posts by {{ user.username }} ({{ posts.total}}) </h1> 
     {% for post in posts.items %}
     <article class="media content-section">
-      
+      <!-- the picture of the user -->
         <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
         <div class="media-body">
           <div class="article-metadata">
+            <!-- here will be link if i click on the user, it will go on the "user_posts" of this specific user we have clicked -->
             <a class="mr-2" href="{{ url_for('user_posts', username=post.author.username) }}">{{ post.author.username }}</a> 
             
             <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small> 
@@ -23,11 +26,11 @@
       </article>
     {% endfor %}
 
-    
+    <!-- here goes pagination links specifically for this user -->
     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
 
       {% if page_num %}
-        {% if posts.page == page_num %} 
+        {% if posts.page == page_num %}   <!-- here we change the route function from "home" to "user_posts"  and passing in username -->
           <a class = "btn btn-info mb-4" href="{{ url_for('user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
         {% else %}
           <a class = "btn btn-outline-info mb-4" href="{{ url_for('user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>

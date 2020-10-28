@@ -1,4 +1,4 @@
-in 9 ver we need to get Pagination - 
+in 9 ver we need to get Pagination. is part of flask_sqlalchemy
 
 if we have lots of posts (right now only 2 or 3, but when we make 20 or 30 ) it can slow down our app so we need to preload only few ahead instead of preload all post once
 
@@ -61,14 +61,15 @@ lets look what attributes and methods this object has (with the help of "dir" fu
 // so we can try some of those methods inside of Pagination object...
 
 >>> posts.per_page
-20   // it is a default "per page" since we did not pass anything in (20 "items" per page maximum, or "posts" per page in our case)
+< 20   // it is a default "per page" since we did not pass anything in (20 "items" per page maximum, or "posts" per page in our case)
 >>> posts.page  // looks on what page we are in right now - current page (gives 1 - we are on the first page)
-1
+< 1
 
 so right now we can print out items in this page (we are currently on the first page)
 >>> for post in posts.items: // to print out all individual posts
 ... print(post)
 
+// I HAVE MADE 20 OR MORE POSTS BY MYSELF JUST TO FILL IN THE DB... so we can test the pagination
 // will give us only 20 posts maximum, even if we have more (like 25 or more) and the second part (5 posts out of 25) will be on the second page
 
 User('My first updated post', '2020-05-01 19:21:31.789162')
@@ -177,7 +178,7 @@ None
 12
 13
 
-this way we see 
+this way we see the pagination when we have 2 posts per page with 25 posts
 
 
 

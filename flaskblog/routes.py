@@ -1,7 +1,7 @@
-import os # need to grab the file extention of the uploaded image and saves it do db with this extention (image.jpg, image.png, ect..)
-import secrets # we need in order to get randomize picture name when we upload a new pic
-from PIL import Image # this class is installed with Pillow package (pip3 install Pillow) so we can autoresize big pictures to prevent the site from loading big files
-from flask import render_template, url_for, flash, redirect, request, abort # import abort for update route
+import os 
+import secrets 
+from PIL import Image 
+from flask import render_template, url_for, flash, redirect, request, abort 
 from flaskblog import app, db, bcrypt
 from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from flaskblog.models import User, Post
@@ -12,9 +12,10 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/home")
 def home():
     # grabbing this "page" variable we can pass it to paginate, with type "int" we insure if someone tries to enter something different form a number 
-    page = request.args.get('page', 1, type = int) # we are grabbing the page, default page is 1, type int will cuz our site to appear a value error if someone passes anything other then integer as page number 
-    # with .order_by(Post.date_posted.desc() we can order out posts from new...to...old way
-    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page = page, per_page=5) # instead of query.all() we are using paginate method to be able to set amount of posts to preload (instead of loading them all once)  
+    page = request.args.get('page', 1, type = int) # we are grabbing the page, default page is 1, "type int" cuz our site to appear a value error if someone passes anything other then integer as page number 
+    # now, after we have grabbed the "page", we can pass "page" in query 
+    # with ".order_by(Post.date_posted.desc()" we can order out posts from "new...to...old" way
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page = page, per_page=5) # instead of query.all() we are using ".paginate()" method to be able to set amount of posts to preload (instead of loading them all once)  
     return render_template("home.html", posts = posts) 
 
 @app.route("/about")
@@ -42,18 +43,15 @@ def register():
 
 @app.route("/login", methods =['GET', 'POST'])
 def login():
-    if current_user.is_authenticated: # current user check
+    if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = LoginForm()
-    #  creating some dummy data to check the login form 
     if form.validate_on_submit():
-        # before we were simply checking the hardcoded data, and now we need to check the database for valid data 
-        # firstly the user will be logged in with an email, so we need to write a check for the email in the db:
-        user = User.query.filter_by(email = form.email.data).first() # finds the first User by entered email in the id
-        if user and bcrypt.check_password_hash(user.password, form.password.data): # so if the user exist and the password the user entered is valid we want to login the user and we also need to import the login user function 
-            login_user(user, remember = form.remember.data) # "user" - what we want to login, "remember" - remember me form (boolean) we have created
-            next_page = request.args.get('next') # this line 
-            return redirect(next_page) if next_page else redirect(url_for('home')) # use of ternary conditional 
+        user = User.query.filter_by(email = form.email.data).first() 
+        if user and bcrypt.check_password_hash(user.password, form.password.data): 
+            login_user(user, remember = form.remember.data) 
+            next_page = request.args.get('next') 
+            return redirect(next_page) if next_page else redirect(url_for('home')) 
         else:
             flash("login unsuccessful. Pls check ur email  and password", "danger")
     return render_template('login.html', title = 'Login', form = form)
@@ -172,12 +170,17 @@ def delete_post(post_id):
 
 
 # route to go to all users's post by clicking on the username's tag
+# remember that we create "username" variable that is a string, so we can use it in the route function. We will show all posts for this specific "username"
 @app.route("/user/<string:username>")
 def user_posts(username):
     page = request.args.get('page', 1, type = int)
-    user = User.query.filter_by(username=username).first_or_404() # get the first user with this username and if u get non, return 404 "no found" error 
+    # we need to query for this specific user first, and only then grab the posts that connected to this username 
+    user = User.query.filter_by(username=username).first_or_404() # get the first user with this username and if u get non, return 404 "no found" error, if no such user exist
     # by putting "\" (backlash) we can break up multiple lines without actually breaking the code, so we can look up the code clear 
+    # so, after we have that username we can filter the posts by this "username"
     posts = Post.query.filter_by(author=user)\
         .order_by(Post.date_posted.desc())\
         .paginate(page = page, per_page=5)
-    return render_template("user_posts.html", posts = posts, user=user) 
+    return render_template("user_posts.html", posts = posts, user=user) # we pass in those instances to then be shown on "user_posts.py" template
+
+# then we create a special template to show the users's posts: "user_posts.py"

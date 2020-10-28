@@ -3,18 +3,16 @@
 {% block content %}
 
     <!-- displays all posts we have done -->
+    <!-- since "posts" right now is a pagination object (made this in home route) we can loops through all items (posts) inside the "posts" -->
     {% for post in posts.items %}
     <article class="media content-section">
-      <!-- the "author" is our backref so we can access it's  entire User and his attributes (where image_file is an attribute of User) -->
-      <!-- we make a small avatar placed near the User's post: -->
         <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
         <div class="media-body">
           <div class="article-metadata">
+            <!-- here will be link if i click on the user, it will go on the "user_posts" of this specific user we have clicked -->
             <a class="mr-2" href="{{ url_for('user_posts', username=post.author.username) }}">{{ post.author.username }}</a> 
-            <!-- with strftime method we can display time how we want, and we can customize it better and detailed  -->
             <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small> 
           </div>
-          <!-- article title.  -->
           <h2><a class="article-title" href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
           <p class="article-content">{{ post.content }}</p>
         </div>
@@ -22,18 +20,21 @@
     {% endfor %}
 
     <!-- this logic will visually show the pagination particularly the number of the page we currently on
-    and the ellipses (...) they are useful when we have lots of pages   -->
-    <!-- left_edge=1, right_edge=1, left_current=1, right_current=2 
+    and the ellipses (...) they are useful when we have lots of pages -->
+    <!-- left_edge=1, right_edge=1, left_current=1, right_current=2  - are links to this pages
     will make the look of pagination like this (where 4 is a page we currently on) 1 ...3 [4] 5... 13 -->
     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-
-      {% if page_num %}
+      <!-- if "page_num" has number inside, we want to put a link to that page number -->
+      {% if page_num %} 
+          <!-- if current page then make it looks blueish -->
         {% if posts.page == page_num %}  <!-- if the page we are currently on equals to page number in our loop we want this look a little different. It will make the page number we currently on more blueish -->
           <a class = "btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
         {% else %}
-          <a class = "btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+          <!-- if not hte current page make the rest numbers: 1 ...3 [4] 5... 13, not [4], the others, look normal  -->
+          <a class = "btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a> 
         {% endif %}
       {% else %}
+      <!-- if "page_num" has "None", we want to put the Ellipses (...), so it will be the (...)-sign in between -->
         ...
       {% endif %}
 
