@@ -2,8 +2,8 @@ import os
 import secrets 
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort 
-from flaskblog import app, db, bcrypt, mail # import mail for the reset password procedure
-from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, RequestResetForm, ResetPasswordForm
+from flaskblog import app, db, bcrypt, mail # import "mail" for the reset password procedure
+from flaskblog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, RequestResetForm, ResetPasswordForm # imports RequestResetForm, ResetPasswordForm classes from forms.py 
 from flaskblog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message # to send an email message, needed for reset password  
@@ -185,35 +185,40 @@ def user_posts(username):
 
 
 # EMAIL SENDING 
-# with this function we can sent email to the user with token and instructions to reset the password 
-# before we also need to install another flask extention flask-mail
+# with this function we can sent an email to the user with token and instructions to reset the password 
+# before we also need to install another flask extention "flask-mail"
 def send_reset_email(user):
+    # we use ".get_reset_token()" method from "User.models.py" 
     token = user.get_reset_token()
-    # we also need to keep in mind that the sender email has to have something from the damain name or it will land in the spam folder 
+    # we also need to keep in mind that the sender email has to have something from the domain name or it will land in the spam folder 
     msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
-    # _external=True needs to get an absolute url rather then a relative (like in our app directory)
+    # "_external=True" needs to get an absolute (full domain) url rather then a relative (like in our app directory)
+    # We also can always make a complex email message and use Ginger templates (JS code) inside so then we paste the relative url link with the template, but since we just send a token we do not need logic inside 
     # keep in mind that we need to write this message without tab or space
+    # in "url_for" will be the actual link with token
     msg.body = f''' To reset your password visit the folowing link:
 {url_for('reset_token', token = token, _external=True)} 
 
 If you did not make ths request then simply ignore this email and no changes will be made
 '''
-    mail.send(msg) # the actual code that sends the email
+    mail.send(msg) # the actual code that sends the email. Uses instance "mail" from Mail class (flask_mail extantion) from "__init__.py"
+
 
 #TWO ROUTES WITH RESET PASSWORD FUNCTIONALITY:
 
 # the route to reset the password
-# user enters his email addres, where the reset password information be send
+# user enters his email address, where the reset password information be send
 @app.route("/reset_password", methods =['GET', 'POST']) 
 def reset_request():
     # making sure that the user is logged out
     if current_user.is_authenticated: 
         return redirect(url_for('home'))
-    form = RequestResetForm()
+    form = RequestResetForm() # making instance of "RequestResetForm()" class from "forms.py"
+    # ".validate_on_submit()" handles the data inputs whenever the data from template template (reset_request.html) will be submitted 
     if form.validate_on_submit(): # at this point the user has submitted an email into our form, so we need to grab the user for that email
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=form.email.data).first() # actual find/check in DB whenever the submitted from "reset_request.html" email exists and we initialize it as "user"
         # after we got the user, we need to send this user an email with their token, so they can reset the password
-        send_reset_email(user) # this function is written above
+        send_reset_email(user) # will execute the function, that sends the email to users's email. Cuz if we found him in DB the User class will have an email inside
         flash('An email has been sent with instructions to reset your password', 'info') 
         return redirect(url_for('login'))
     return render_template("reset_request.html", title = 'Reset Password', form=form)
@@ -225,12 +230,13 @@ def reset_request():
 # # so by sending them an email with a link containing this token we will know that it is them when they navigate to this route 
 # so this route is similar to this above but accept the token as paramenter
    
+# we accept a "token" variable as a parameter, so we pass that "token" in the function
 @app.route("/reset_password/<token>", methods =['GET', 'POST']) 
 def reset_token(token):
     # making sure that the user is logged out
     if current_user.is_authenticated: 
         return redirect(url_for('home'))
-    user = User.verify_reset_token(token)
+    user = User.verify_reset_token(token) # we verify the token from the url with method from User.models.py, that will check the generated token and the token from email
     # if we dont get user back, it means the token is invalid or expired, so we put this conditional 
     if user is None:
         flash('That is an invalid or expired token', 'warning')
@@ -238,10 +244,11 @@ def reset_token(token):
     # and if the token valid we can dispaly the form so the user can update it's password
     form = ResetPasswordForm()
     # getting the password changed and saved to the db
+    # ".validate_on_submit()" handles the data inputs whenever the data from template template (reset_token.html) will be submitted 
     if form.validate_on_submit():
         hashed_pasword = bcrypt.generate_password_hash(form.password.data).decode('utf-8') 
-        user.password = hashed_pasword # it will hash that password from our "form.password.data" which we do have a password field in this reset passord from above
-        db.session.commit() # will commit the changes of user's password 
+        user.password = hashed_pasword # it will hash that password from our "form.password.data" which we do have a password field in this reset passord form
+        db.session.commit() # will commit the changes of user's password. So the new password is applied
         flash('Your password has been updated ! You are now able to log in', 'success')
         return redirect(url_for('login'))
     # the user will be send to the form to update the password

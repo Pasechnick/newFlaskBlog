@@ -1,16 +1,22 @@
-"itsdangerous" package is preinstalled with flask. only who has access to user's email can reset their password
+"itsdangerous" package is preinstalled with flask. 
+With that package we can generate a secure time sensitive token,
+so that only user who has access to user's email can reset their password
 
 >>> python3
 
->>> from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+>>> from itsdangerous import TimedJSONWebSignatureSerializer as Serializer  // long import of "serializer"
 
->>> s = Serializer('secret', 30)  // we going to use it to pass a secret key and an expiration time in 30 seconds                 
+>>> s = Serializer('secret', 30)  // we going to use it to pass a secret key and an expiration time in 30 seconds 
+
+// to generate a token we use ".dumbs" method that will use "user_id" as payload in form of dictionary to generate token
+// so we encode "user_id" in random token
 >>> token = s.dumps({'user_id': 1}).decode('utf-8')  // we need to decode cuz it is in bytes originally (after we have a token with expiration of 30 seconds)
 >>> token
 'eyJhbGciOiJIUzUxMiIsImlhdCI6MTU4ODQ0MjU4OSwiZXhwIjoxNTg4NDQyNjE5fQ.eyJ1c2
 VyX2lkIjoxfQ.kiQjTGzP2S61gdzgh-Rj0fBOe4JzymPjieTMzHkptUlxe4bEO9CdLJg24jIS8y7JDwI9QhdeyErc8RqIJtcAJQ'  // we get this huge random string token
 
-// if we quickly (during 30 sec) check this token then we run this and we get the payload of user_id
+// to check if this a valid token we can use ".loads" method 
+// if we quickly (during 30 sec) check this token then we run this and we get the payload - "user_id"
 >>> s.loads(token)
 {'user_id': 1} 
 
@@ -18,7 +24,7 @@ VyX2lkIjoxfQ.kiQjTGzP2S61gdzgh-Rj0fBOe4JzymPjieTMzHkptUlxe4bEO9CdLJg24jIS8y7JDwI
 itsdangerous.exc.SignatureExpired: Signature expired  // cuz 30 seconds left and it is expired
 
 
-we also need to install flask-mail extension 
+we also need to install flask-mail extension to continue...
 
 > pip3 install flask-mail
 

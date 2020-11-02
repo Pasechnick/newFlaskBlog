@@ -1,7 +1,7 @@
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer # we need import this to be able to make tokens secret key and so on
 from datetime import datetime
-from flaskblog import db, login_manager, app # we need app
+from flaskblog import db, login_manager, app # we need app instance for secret key
 from flask_login import UserMixin 
 
   
@@ -19,20 +19,22 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False) 
     posts = db.relationship('Post', backref='author', lazy=True) 
 
-    # here is the way to generate and validate tokens:
+    # here is the way to generate and validate tokens through get_reset_token() and verify_reset_token() :
     # we need to create methode to easy create some tokens
-    def get_reset_token(self, expires_sec=1800): # 1800 - 30 minutes 
-        s = Serializer(app.config['SECRET_KEY'], expires_sec)  # serializer object
-        return s.dumps({'user_id': self.id}).decode('utf-8') # returns a token 
+    def get_reset_token(self, expires_sec=1800): # 1800 seconds - 30 minutes 
+        s = Serializer(app.config['SECRET_KEY'], expires_sec)  # serializer object, where we passin the "SECRET_KEY"
+        return s.dumps({'user_id': self.id}).decode('utf-8') # returns a token for the serializer, decoded from bytes
 
-    @staticmethod # not to expect that self parameter as an argument and we will accept only this token as an argument
+    # method that verifies the token  
+    @staticmethod # by mention staticmethod we tell python not to expect that self parameter as an argument and we will accept only this token as an argument
     def verify_reset_token(token): # takes in a token as an argument and if it is valid it will return the user with that user_id (user_id was the payload that we ave passed in in the initial token)
-        s = Serializer(app.config['SECRET_KEY']) # creates a serializer 
+        s = Serializer(app.config['SECRET_KEY']) # creates a serializer object with SECRET KEY 
+        # we do not need "expires_sec" this time, we could get sometimes an exception like the token expires or something else, so we put "try - except" block   
         try: 
             user_id = s.loads(token)['user_id'] # tries load that token
         except:                                 # if it gets an exception 
             return None                         # returns none 
-        return User.query.get(user_id)          # if there is no exception it returns user with it's id
+        return User.query.get(user_id)          # if there is no exception it returns User with it's id
     
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"

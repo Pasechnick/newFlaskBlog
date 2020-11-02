@@ -74,12 +74,13 @@ class PostForm(FlaskForm):
 
 
 # this is a form for our route. Reset password page where a user can submit their email for their account so instructions can be send
+# remember that this inherits from FlaskForm class...
 class RequestResetForm(FlaskForm):
     email = StringField('Email',
                             validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')
 
-    # validation if the account exist for the email address
+    # validation if the account NOT exist for the email address
     def validate_email(self, email):
         user = User.query.filter_by(email = email.data).first()
         # then, if there is no user under this email, the user have to register
@@ -88,7 +89,10 @@ class RequestResetForm(FlaskForm):
 
 # form where the user actually reset the password
 class ResetPasswordForm(FlaskForm):
+    # new password will be typed here
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                                          validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
+
+# right after we have created those two forms: RequestResetForm, ResetPasswordForm, we have to create routes that will handle them and then we create the html templates

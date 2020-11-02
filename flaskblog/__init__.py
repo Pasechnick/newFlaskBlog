@@ -20,9 +20,10 @@ login_manager.login_message_category = 'info' # how would be the "Please log in 
 
 
 # setting up a mail configuration 
-# we say that we use gmail protocols for the mail client
+# we say that we use gmail protocols for the mail client. 
+# We use environmental variables: EMAIL_USER, EMAIL_PASS, so the MAIL_SERVER can use tha actual password and email to be able to send the email
 
-# for some reason we have to rework the
+# for some reason we have to rework the email congigs...
 # i also need to turn off "less secure app access" in security settings of gmail otherways it will be an authentication error 
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com' # it was smtp.googlemail.com

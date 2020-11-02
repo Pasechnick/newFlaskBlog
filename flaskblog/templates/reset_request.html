@@ -2,6 +2,8 @@
 
 {% block content %}
 
+    <!--  -->
+
     <!-- copied from login form but changed. so we just cut some stuff off,
          that we do not need in that template. so it is a page where the user requests to reset the password  -->
 
@@ -10,10 +12,12 @@
         <form method="POST" action=""> 
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <!-- small notice for me about sender-email  -->
+                                                                            <!-- small notice for me about sender-email  -->
                 <legend class="border-bottom mb-4">Reset Password <small>(FOR ADMIN: need to turn on less secure app access for gmail - sender account)</small></legend> 
                 
                 <div class ="form-group">
+                    <!-- here goes the email, that user thinks the password belongs to, 
+                        this email then will be grubbed by "validate_on_submit()" method from the "/reset_password" route so we can check and handle the email and send the conformation email with token -->
                     {{ form.email.label(class="form-control-label") }}
                     {% if form.email.errors %} 
                         {{ form.email(class="form-control form-control-lg is-invalid") }}
