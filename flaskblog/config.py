@@ -1,13 +1,14 @@
 
 import os
 
-
+# by making a Config class allow us to have all the configurations contained in one single object
+# and ths way we can use inheritance for create future configurations ! 
 class Config:
 
     # we want them to be constant variables so we remove the "app.config" section from the beginning
-    # so there are keynames left
+    # so there are only keynames left
 
-    # we also need to move our database info like the secret key and the uri of db in environmetal variables, 
+    # we also need to move our database info like the "secret key" and the "uri" of db in environmetal variables, 
     # cuz in the future this is the cummon practice. So we need to get used to this habbit
     SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')

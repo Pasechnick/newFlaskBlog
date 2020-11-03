@@ -39,15 +39,19 @@ and we run the app and click everywhere, delete posts, update and ect. so we kno
 
 also we move all configurations to config.py file, and connected this with then we redone the run.py file 
 
+what we also can do is move templates to it's blueprints, so that every blueprint has it's own static and template folders as subfolders in blueprints directory, but cuz the app is not so big it os fine 
+
+do not forget that every package has it's own "__init__.py" file, even this is empty it just mean that the folder is a package
+
 .
 ├── flaskblog
-│   ├── __init__.py
-│   ├── config.py
-│   ├── main
+│   ├── __init__.py                        // the main __init__.py file here we connect all the functionality and blueprints and make function for creating the application
+│   ├── config.py                          // here goes all the configuration values. will be made class based, so we an use inheritance for future configurations  
+│   ├── main                               // main blueprint. 
 │   │   ├── __init__.py
 │   │   └── routes.py
 │   ├── models.py
-│   ├── posts
+│   ├── posts                              // post's blueprint. we put all that associates with creating a post functionality
 │   │   ├── __init__.py
 │   │   ├── forms.py
 │   │   └── routes.py
@@ -73,18 +77,9 @@ also we move all configurations to config.py file, and connected this with then 
 │   │   ├── reset_request.html
 │   │   ├── reset_token.html
 │   │   └── user_posts.html
-│   └── users
+│   └── users                               // user's blueprint. we put all  
 │       ├── __init__.py
 │       ├── forms.py
 │       ├── routes.py
 │       └── utils.py
-├── howTo10.txt
-├── howTo11.txt
-├── howTo5.txt
-├── howTo6.txt
-├── howTo7.txt
-├── howTo8.txt
-├── howTo9.txt
-├── run.py
-├── testForEnvVar.py
-└── toDo.txt
+├── run.py                                  // creates the app, where the create_app goes, we can also can create a new configuration to pass in 

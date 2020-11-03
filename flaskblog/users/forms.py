@@ -6,6 +6,8 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from flask_login import current_user
 from flaskblog.models import User
 
+# so those forms are User's forms, they have functionality that specific for users and authentication 
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username', 
                             validators=[DataRequired(), Length(min=2, max=20)])
@@ -46,8 +48,6 @@ class UpdateAccountForm(FlaskForm):
                             validators=[DataRequired(), Email()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])]) 
     submit = SubmitField('Update')
-
-
    
     def validate_username(self, username):
         
@@ -64,20 +64,16 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('Validation Message: That Email is taken, please use another')
 
 
-# this is a form for our route. Reset password page where a user can submit their email for their account so instructions can be send
 class RequestResetForm(FlaskForm):
     email = StringField('Email',
                             validators=[DataRequired(), Email()])
-    submit = SubmitField('Request Password Reset')
-
-    # validation if the account exist for the email address
+    submit = SubmitField('Request Password Reset')    
     def validate_email(self, email):
         user = User.query.filter_by(email = email.data).first()
-        # then, if there is no user under this email, the user have to register
         if user is None:
             raise ValidationError('There is no account with that email, register first.')
 
-# form where the user actually reset the password
+
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',

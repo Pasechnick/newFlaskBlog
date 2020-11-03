@@ -1,7 +1,7 @@
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer # we need import this to be able to make tokens secret key and so on
 from datetime import datetime
-from flask import current_app
+from flask import current_app # we need current_app so that we use it instead of "app "instance
 from flaskblog import db, login_manager
 from flask_login import UserMixin 
 
