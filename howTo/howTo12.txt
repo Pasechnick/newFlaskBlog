@@ -1,9 +1,15 @@
-we will be adding some custom error pages
+we will be adding some custom error pages. That shows us how with the help of blueprints we can add some additional features by adding sections
 
 so right now if we go http://127.0.0.1:5000/testpage we will get the page not exist error 404
 
-then if we rtry to update posts that not belong to the user we will get permission error 403
+then if we retry to update posts that not belong to the user we will get permission error 403
 http://127.0.0.1:5000/post/new/5/update
 
 this shows how we can use blueprint, so we have just created our custom error pages with the help of blueprint
+
+so the way to create a new section with the help of blueprints:
+
+we create a new blueprint called errors and then create a new package directory so we make a "__init__.py" file within this folder we make
+a "handlers.py" file were we put "routes" for errors
+
 

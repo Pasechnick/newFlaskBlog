@@ -1,7 +1,11 @@
 from flask import Blueprint, render_template
 
+# instance of the Blueprint with "errors" name
 errors = Blueprint('errors', __name__)
 
+# the way we create error handlers is similar the way we create routes except we use different decorators
+# after we do this, we make html templates for those errors
+# after that we need to import and register those blueprints in the "__init__.py" to activate our custom error pages
 
 @errors.app_errorhandler(404) # 404 is whenever page is not found (the page do not exist)
 def error_404(error):
